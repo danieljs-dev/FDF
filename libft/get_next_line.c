@@ -6,7 +6,7 @@
 /*   By: dajesus- <dajesus-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 15:27:14 by dajesus-          #+#    #+#             */
-/*   Updated: 2024/12/19 13:03:34 by dajesus-         ###   ########.fr       */
+/*   Updated: 2024/12/28 04:42:41 by dajesus-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,10 @@ char	*get_next_line(int fd)
 	free(read_buffer);
 	read_buffer = NULL;
 	if (current_line == NULL && accumulated_content[fd])
+	{
 		free(accumulated_content[fd]);
+		accumulated_content[fd] = NULL;
+	}
 	accumulated_content[fd] = get_rest_lines(current_line);
 	if (current_line == NULL || *current_line == '\0')
 	{

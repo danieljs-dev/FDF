@@ -1,6 +1,6 @@
 #cc main.c read_file.c libft/libft.a
 
-SRCS		=	main.c read_file.c draw.c
+SRCS		=	main.c read_file.c draw.c bresenham.c global_utils.c
 HEADERS		= 	fdf.h
 NAME		=	fdf
 CC			=	cc -Wall -Wextra -Werror
