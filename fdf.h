@@ -6,7 +6,7 @@
 /*   By: dajesus- <dajesus-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 19:11:13 by dajesus-          #+#    #+#             */
-/*   Updated: 2024/12/28 08:58:28 by dajesus-         ###   ########.fr       */
+/*   Updated: 2024/12/28 13:24:40 by dajesus-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ void	create_image(t_fdf *data);
 void	put_pixel_to_image(t_fdf *data, int x, int y, int color);
 void	get_dimensions(char *file_name, t_fdf *data);
 void	fill_z_matrix(char *file_name, t_fdf *data);
+int		ft_wdcounter(char const *str, char c);
 int		allocate_z_matrix(t_fdf *data);
 
 float	max(float a, float b);
