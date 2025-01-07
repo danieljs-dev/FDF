@@ -6,7 +6,7 @@
 /*   By: dajesus- <dajesus-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/28 08:50:27 by dajesus-          #+#    #+#             */
-/*   Updated: 2024/12/28 09:04:14 by dajesus-         ###   ########.fr       */
+/*   Updated: 2025/01/06 21:33:54 by dajesus-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static void	bresenham_draw(t_bresenham_params *params, t_fdf *data)
 	}
 }
 
-void	isometric(float *x, float *y, int z)
+void	isometric(float *x, float *y, int z, float z_scale)
 {
 	static float	cos_angle;
 	static float	sin_angle;
@@ -41,7 +41,7 @@ void	isometric(float *x, float *y, int z)
 	cos_angle = 0.8;
 	sin_angle = 0.8;
 	*x = (*x - *y) * cos(cos_angle);
-	*y = (*x + *y) * sin(sin_angle) - z;
+	*y = (*x + *y) * sin(sin_angle) - (z * z_scale);
 }
 
 void	bresenham(t_bresenham_params *params, t_fdf *data)
@@ -49,8 +49,8 @@ void	bresenham(t_bresenham_params *params, t_fdf *data)
 	int		z;
 	int		z1;
 
-	z = 0;
-	z1 = 0;
+	// z = 0;
+	// z1 = 0;
 	z = data->z_matrix[(int)params->y][(int)params->x];
 	z1 = data->z_matrix[(int)params->y1][(int)params->x1];
 	params->x *= data->zoom;
@@ -58,11 +58,11 @@ void	bresenham(t_bresenham_params *params, t_fdf *data)
 	params->x1 *= data->zoom;
 	params->y1 *= data->zoom;
 	if (z || z1)
-		data->color = 0xe80c0c;
+		data->color = 0xFFA500;
 	else
 		data->color = 0x0492c2;
-	isometric(&params->x, & params->y, z);
-	isometric(&params->x1, & params->y1, z1);
+	isometric(&params->x, &params->y, z, data->z_scale);
+	isometric(&params->x1, &params->y1, z1, data->z_scale);
 	params->x += data->shift_x;
 	params->y += data->shift_y;
 	params->x1 += data->shift_x;

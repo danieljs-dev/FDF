@@ -6,7 +6,7 @@
 /*   By: dajesus- <dajesus-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 19:11:13 by dajesus-          #+#    #+#             */
-/*   Updated: 2024/12/28 13:24:40 by dajesus-         ###   ########.fr       */
+/*   Updated: 2025/01/06 19:06:40 by dajesus-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ typedef struct s_fdf
 	int		height;
 	int		shift_x;
 	int		shift_y;
+	float	z_scale;
 
 	int		bpp;
 	int		size_line;
@@ -65,6 +66,6 @@ int		allocate_z_matrix(t_fdf *data);
 
 float	max(float a, float b);
 float	absolute(float a);
-void	isometric(float *x, float *y, int z);
+void	isometric(float *x, float *y, int z, float z_scale);
 
 #endif

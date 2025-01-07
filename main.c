@@ -6,13 +6,13 @@
 /*   By: dajesus- <dajesus-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 19:11:10 by dajesus-          #+#    #+#             */
-/*   Updated: 2024/12/28 09:03:24 by dajesus-         ###   ########.fr       */
+/*   Updated: 2025/01/06 21:15:51 by dajesus-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 #define WINDOW_CLOSE	17
-#define KY_ESC			65307
+#define KEY_ESC			65307
 
 void	free_int_array(int **array, int height)
 {
@@ -29,32 +29,54 @@ void	free_int_array(int **array, int height)
 
 int	cleanup(t_fdf *data)
 {
-	if (data->win_ptr)
-		mlx_destroy_window(data->mlx_ptr, data->win_ptr);
-	if (data->mlx_ptr)
-		mlx_destroy_display(data->mlx_ptr);
-	if (data->z_matrix)
-	{
-		free_int_array(data->z_matrix, data->height);
-		data->z_matrix = NULL;
-	}
+//	mlx_destroy_image(data->mlx_ptr, data->img_data);
+	mlx_destroy_window(data->mlx_ptr, data->win_ptr);
+	mlx_destroy_display(data->mlx_ptr);
+	free_int_array(data->z_matrix, data->height);
+	data->z_matrix = NULL;
 	free(data->mlx_ptr);
 	free(data);
 	exit(0);
 }
 
+int	mouse_hook(int button, int x, int y, t_fdf *data)
+{
+	(void)x;
+	(void)y;
+	if (button == 4) // Scroll para cima
+	{
+		data->zoom += 1;
+		if (data->zoom > 50) // Limite máximo de zoom
+			data->zoom = 50;
+	}
+	else if (button == 5) // Scroll para baixo
+	{
+		data->zoom -= 1;
+		if (data->zoom < 1) // Limite mínimo de zoom
+			data->zoom = 1;
+	}
+	mlx_clear_window(data->mlx_ptr, data->win_ptr);
+	draw(data);
+	return (0);
+}
+
 int	deal_key(int key, t_fdf *data)
 {
-	ft_printf("%d\n", key);
+	if (key == 61 || key == 65451) // '+' (teclado principal ou numérico)
+		data->z_scale += 0.5;
+	if (key == 45 || key == 65453) // '-' (teclado principal ou numérico)
+		data->z_scale -= 0.5;
+	if (data->z_scale < 0.1)
+		data->z_scale = 0.1;
 	if (key == 65362)
-		data->shift_y -= 10;
+		data->shift_y -= 50;
 	if (key == 65364)
-		data->shift_y += 10;
+		data->shift_y += 50;
 	if (key == 65361)
-		data->shift_x -= 10;
+		data->shift_x -= 50;
 	if (key == 65363)
-		data->shift_x += 10;
-	if (key == KY_ESC || key == WINDOW_CLOSE)
+		data->shift_x += 50;
+	if (key == KEY_ESC || key == WINDOW_CLOSE)
 		return (cleanup(data));
 	mlx_clear_window(data->mlx_ptr, data-> win_ptr);
 	draw(data);
@@ -103,8 +125,12 @@ int	main(int argc, char *argv[])
 	calculate_zoom(data, win_w, win_h);
 	data->shift_x = (win_w - (data->width * data->zoom)) / 2;
 	data->shift_y = (win_h - (data->height * data->zoom)) / 2;
+	data->z_scale = 1.0;
 	draw(data);
-	mlx_key_hook(data->win_ptr, deal_key, data);
+	mlx_hook(data->win_ptr, WINDOW_CLOSE, 0, cleanup, data);
+	mlx_key_hook(data->win_ptr, &deal_key, data);
+	mlx_hook(data->win_ptr, 4, 1L << 2, mouse_hook, data); // Evento do mouse
+	mlx_hook(data->win_ptr, 5, 1L << 3, mouse_hook, data); // Evento do mouse
 	mlx_loop(data-> mlx_ptr);
 	cleanup(data);
 	return (0);
