@@ -6,7 +6,7 @@
 /*   By: dajesus- <dajesus-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 15:27:14 by dajesus-          #+#    #+#             */
-/*   Updated: 2024/12/28 04:42:41 by dajesus-         ###   ########.fr       */
+/*   Updated: 2025/01/10 09:05:30 by dajesus-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,9 @@ static char	*get_rest_lines(char *line)
 
 char	*get_next_line(int fd)
 {
-	static char		*accumulated_content[1024];
-	char			*current_line;
-	char			*read_buffer;
+	static char	*accumulated_content[1024];
+	char		*current_line;
+	char		*read_buffer;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);

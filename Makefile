@@ -36,22 +36,22 @@ REVERSE     = \033[7m
 RESET   	= \033[0m
 
 define HEADER
-███████╗██████╗ ███████╗
+███████╗██████╗░███████╗
 ██╔════╝██╔══██╗██╔════╝
-█████╗  ██║  ██║█████╗  
-██╔══╝  ██║  ██║██╔══╝  
-██║     ██████╔╝██║     
-╚═╝     ╚═════╝ ╚═╝     
-                        
+█████╗░░██║░░██║█████╗░░
+██╔══╝░░██║░░██║██╔══╝░░
+██║░░░░░██████╔╝██║░░░░░
+╚═╝░░░░░╚═════╝░╚═╝░░░░░
+
 $(GREEN)(dajesus- "https://github.com/danieljs-dev")$(RESET)
 
 endef
 export HEADER
 
-SRCS		=	main.c read_file.c draw.c bresenham.c global_utils.c
+SRCS		=	main.c read_file.c draw.c bresenham.c global_utils.c handle_map.c handle_file.c
 HEADERS		= 	fdf.h
 NAME		=	fdf
-CC			=	cc -Wall -Wextra -Werror
+CC			=	cc -Wall -Wextra -Werror -g3
 FLAGS	=	-lm -Lminilibx-linux -lmlx -Llibft -lft -lXext -lX11
 #FLAGS       = -lm -Llibft -lft -LMLX42/build -lmlx42 -lX11 -lXext
 

@@ -6,7 +6,7 @@
 /*   By: dajesus- <dajesus-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 00:29:52 by dajesus-          #+#    #+#             */
-/*   Updated: 2025/01/06 18:18:25 by dajesus-         ###   ########.fr       */
+/*   Updated: 2025/01/10 11:46:43 by dajesus-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 static void	draw_horizontal_lines(t_fdf *data, t_bresenham_params *params)
 {
-	int		x;
-	int		y;
+	int	x;
+	int	y;
 
 	y = 0;
 	while (y < data->height)
@@ -36,8 +36,8 @@ static void	draw_horizontal_lines(t_fdf *data, t_bresenham_params *params)
 
 static void	draw_vertical_lines(t_fdf *data, t_bresenham_params *params)
 {
-	int		x;
-	int		y;
+	int	x;
+	int	y;
 
 	y = 0;
 	while (y < data->height - 1)

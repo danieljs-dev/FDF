@@ -6,20 +6,26 @@
 /*   By: dajesus- <dajesus-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 19:11:13 by dajesus-          #+#    #+#             */
-/*   Updated: 2025/01/06 19:06:40 by dajesus-         ###   ########.fr       */
+/*   Updated: 2025/01/10 11:32:09 by dajesus-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FDF_H
 # define FDF_H
 
+# include "keys.h"
+# include "libft/libft.h"
+# include <fcntl.h>
 # include <math.h>
 # include <stdlib.h>
-# include <fcntl.h>
 # include <unistd.h>
-# include "libft/libft.h"
 //# include "MLX42/include/MLX42/MLX42.h"
 # include "minilibx-linux/mlx.h"
+
+# define WIN_W 1024
+# define WIN_H 768
+# define MIN_ZOOM 1
+# define MAX_ZOOM 50
 
 typedef struct s_fdf
 {
@@ -38,6 +44,8 @@ typedef struct s_fdf
 	void	*img_ptr;
 
 	int		**z_matrix;
+	int		**color_matrix;
+
 	void	*mlx_ptr;
 	void	*win_ptr;
 }			t_fdf;
@@ -52,20 +60,20 @@ typedef struct s_bresenham_params
 	float	y_step;
 }			t_bresenham_params;
 
-void	draw(t_fdf *data);
-void	free_int_array(int **array, int height);
-void	read_file(char *file_name, t_fdf *data);
-void	bresenham(t_bresenham_params *params, t_fdf *data);
-int		cleanup(t_fdf *data);
-void	create_image(t_fdf *data);
-void	put_pixel_to_image(t_fdf *data, int x, int y, int color);
-void	get_dimensions(char *file_name, t_fdf *data);
-void	fill_z_matrix(char *file_name, t_fdf *data);
-int		ft_wdcounter(char const *str, char c);
-int		allocate_z_matrix(t_fdf *data);
+int			cleanup(t_fdf *data);
+int			open_file(char *file_name);
+int			parse_hex_color(const char *hex);
 
-float	max(float a, float b);
-float	absolute(float a);
-void	isometric(float *x, float *y, int z, float z_scale);
+void		draw(t_fdf *data);
+void		create_image(t_fdf *data);
+void		free_int_array(int **array, int height);
+void		read_file(char *file_name, t_fdf *data);
+void		validate_file_extension(char *file_name);
+void		validate_line(char *line, t_fdf *data, int fd);
+void		bresenham(t_bresenham_params *params, t_fdf *data);
+// void		isometric(float *x, float *y, int z, float z_scale);
+void		fill_z_and_color_matrix(char *file_name, t_fdf *data);
+void		put_pixel_to_image(t_fdf *data, int x, int y, int color);
+void		cleanup_and_exit(t_fdf *data, int fd, char *line, int code);
 
 #endif
