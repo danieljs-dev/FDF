@@ -6,27 +6,11 @@
 /*   By: dajesus- <dajesus-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 15:17:08 by dajesus-          #+#    #+#             */
-/*   Updated: 2024/12/17 21:11:41 by dajesus-         ###   ########.fr       */
+/*   Updated: 2025/01/07 18:07:46 by dajesus-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-
-static size_t	count_tokens(char const *s, char sep)
-{
-	size_t		i;
-	size_t		tokens;
-
-	i = 0;
-	tokens = 0;
-	while (s[i])
-	{
-		if (s[i] != sep && (s[i + 1] == sep || s[i + 1] == '\0'))
-			tokens++;
-		i++;
-	}
-	return (tokens);
-}
 
 static char	*get_word(const char *s, size_t *index, char sep)
 {
@@ -79,7 +63,7 @@ char	**ft_split(char const *s, char c)
 
 	if (!s)
 		return (NULL);
-	token_vector = malloc((count_tokens(s, c) + 1) * sizeof(char *));
+	token_vector = malloc((ft_count_words(s, c) + 1) * sizeof(char *));
 	if (token_vector == NULL)
 		return (NULL);
 	i = 0;

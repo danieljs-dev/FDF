@@ -6,7 +6,7 @@
 /*   By: dajesus- <dajesus-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 09:27:56 by dajesus-          #+#    #+#             */
-/*   Updated: 2024/12/18 19:47:12 by dajesus-         ###   ########.fr       */
+/*   Updated: 2025/01/10 01:22:03 by dajesus-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ int		ft_strncmp(const char *s1, const char *s2, size_t n);
 int		ft_memcmp(const void *s1, const void *s2, size_t n);
 int		ft_putunsigned_dec_fd(unsigned int n, int fd);
 int		ft_putunsigned_hex_fd(unsigned long n, const char *hex_base, int fd);
+float	ft_abs(float a);
+float	ft_max(float a, float b);
 void	ft_bzero(void *s, size_t n);
 void	ft_putnbr_fd(int n, int fd);
 void	ft_putchar_fd(char c, int fd);
@@ -72,6 +74,7 @@ char	*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 char	*ft_strnstr(const char *big,	const char *little, size_t len);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 size_t	ft_strlen(const char *s);
+size_t	ft_count_words(char const *s, char sep);
 size_t	ft_strlcpy(char *dst, const char *src, size_t size);
 size_t	ft_strlcat(char *dst, const char *src, size_t size);
 
