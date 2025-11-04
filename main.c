@@ -12,60 +12,81 @@
 
 #include "fdf.h"
 
-int	cleanup(t_fdf *data)
+static void	on_close(void *param)
 {
-	mlx_destroy_window(data->mlx_ptr, data->win_ptr);
-	mlx_destroy_display(data->mlx_ptr);
-	free_int_array(data->z_matrix, data->height);
-	free_int_array(data->color_matrix, data->height);
-	data->z_matrix = NULL;
-	free(data->mlx_ptr);
-	free(data);
-	exit(0);
+	t_fdf *data = (t_fdf *)param;
+	(void)data;
+	// Signal window to close; actual cleanup happens after loop returns
+	if (data && data->mlx)
+		mlx_close_window(data->mlx);
 }
 
-int	mouse_hook(int button, int x, int y, t_fdf *data)
+static void	on_scroll(double xdelta, double ydelta, void *param)
 {
-	(void)x;
-	(void)y;
-	if (button == SCROLL_UP)
+	t_fdf *data;
+	(void)xdelta;
+	data = (t_fdf *)param;
+	if (!data)
+		return ;
+	if (ydelta > 0)
 	{
 		data->zoom += 1;
 		if (data->zoom > MAX_ZOOM)
 			data->zoom = MAX_ZOOM;
 	}
-	else if (button == SCROLL_DOWN)
+	else if (ydelta < 0)
 	{
 		data->zoom -= 1;
 		if (data->zoom < MIN_ZOOM)
 			data->zoom = MIN_ZOOM;
 	}
-	mlx_clear_window(data->mlx_ptr, data->win_ptr);
 	draw(data);
-	return (0);
 }
 
-int	deal_key(int key, t_fdf *data)
+static void	on_key(mlx_key_data_t keydata, void *param)
 {
-	if (key == KEY_UP)
-		data->shift_y -= 50;
-	if (key == KEY_DOWN)
-		data->shift_y += 50;
-	if (key == KEY_LEFT)
-		data->shift_x -= 50;
-	if (key == KEY_RIGHT)
-		data->shift_x += 50;
-	if (key == KEY_PLUS || key == KEY_PLUS_NUMPAD)
-		data->z_scale += 0.5;
-	if (key == KEY_MINUS || key == KEY_MINUS_NUMPAD)
-		data->z_scale -= 0.5;
-	if (data->z_scale < 0.1)
-		data->z_scale = 0.1;
-	if (key == KEY_ESC || key == WINDOW_CLOSE)
-		return (cleanup(data));
-	mlx_clear_window(data->mlx_ptr, data->win_ptr);
-	draw(data);
-	return (0);
+	t_fdf *data = (t_fdf *)param;
+	if (!data)
+		return ;
+
+	if (keydata.action == MLX_PRESS || keydata.action == MLX_REPEAT)
+	{
+		if (keydata.key == MLX_KEY_UP)
+			data->shift_y -= 50;
+		if (keydata.key == MLX_KEY_DOWN)
+			data->shift_y += 50;
+		if (keydata.key == MLX_KEY_LEFT)
+			data->shift_x -= 50;
+		if (keydata.key == MLX_KEY_RIGHT)
+			data->shift_x += 50;
+		if (keydata.key == MLX_KEY_EQUAL) // '+'
+			data->z_scale += 0.05f;
+		if (keydata.key == MLX_KEY_MINUS)
+			data->z_scale -= 0.05f;
+		if (data->z_scale < 0.1f)
+			data->z_scale = 0.1f;
+		if (keydata.key == MLX_KEY_ESCAPE)
+		{
+			mlx_close_window(data->mlx);
+			return ;
+		}
+		draw(data);
+	}
+}
+
+int	cleanup(t_fdf *data)
+{
+	if (!data)
+		exit(0);
+	if (data->img)
+		mlx_delete_image(data->mlx, data->img);
+	if (data->mlx)
+		mlx_terminate(data->mlx);
+	free_int_array(data->z_matrix, data->height);
+	free_int_array(data->color_matrix, data->height);
+	data->z_matrix = NULL;
+	free(data);
+	exit(0);
 }
 
 void	calculate_zoom(t_fdf *data, int win_w, int win_h)
@@ -104,18 +125,20 @@ int	main(int argc, char *argv[])
 	if (!data)
 		return (1);
 	read_file(argv[1], data);
-	data->mlx_ptr = mlx_init();
-	data->win_ptr = mlx_new_window(data->mlx_ptr, WIN_W, WIN_H, "FDF");
+	data->mlx = mlx_init(WIN_W, WIN_H, "FDF", true);
+	if (!data->mlx)
+		return (1);
 	calculate_zoom(data, WIN_W, WIN_H);
 	data->shift_x = (WIN_W - (data->width * data->zoom)) / 2;
 	data->shift_y = (WIN_H - (data->height * data->zoom)) / 2;
 	data->z_scale = 1.0;
+	data->img = NULL;
+	create_image(data);
 	draw(data);
-	mlx_hook(data->win_ptr, WINDOW_CLOSE, 0, cleanup, data);
-	mlx_key_hook(data->win_ptr, &deal_key, data);
-	mlx_hook(data->win_ptr, 4, 1L << 2, mouse_hook, data);
-	mlx_hook(data->win_ptr, 5, 1L << 3, mouse_hook, data);
-	mlx_loop(data->mlx_ptr);
+	mlx_close_hook(data->mlx, &on_close, data);
+	mlx_key_hook(data->mlx, &on_key, data);
+	mlx_scroll_hook(data->mlx, &on_scroll, data);
+	mlx_loop(data->mlx);
 	cleanup(data);
 	return (0);
 }

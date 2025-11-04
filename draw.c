@@ -63,6 +63,4 @@ void	draw(t_fdf *data)
 	create_image(data);
 	draw_horizontal_lines(data, &params);
 	draw_vertical_lines(data, &params);
-	mlx_put_image_to_window(data->mlx_ptr, data->win_ptr, data->img_ptr, 0, 0);
-	mlx_destroy_image(data->mlx_ptr, data->img_ptr);
 }

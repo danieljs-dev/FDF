@@ -51,41 +51,42 @@ export HEADER
 SRCS		=	main.c read_file.c draw.c bresenham.c global_utils.c handle_map.c handle_file.c
 HEADERS		= 	fdf.h
 NAME		=	fdf
+OBJ_DIR		=	build/obj
+OBJS		=	$(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 CC			=	cc -Wall -Wextra -Werror -g3
-FLAGS	=	-lm -Lminilibx-linux -lmlx -Llibft -lft -lXext -lX11
-#FLAGS       = -lm -Llibft -lft -LMLX42/build -lmlx42 -lX11 -lXext
+FLAGS	=	MLX42/build/libmlx42.a \
+			MLX42/build/_deps/glfw-build/src/libglfw3.a \
+			-ldl -pthread -lm -lX11 -lXrandr -lXi -lXcursor \
+			-Llibft -lft
+# Include paths for MLX42 and libft
+INCLUDES	=	-IMLX42/include -Ilibft
 
 MINILIBX_DIR = minilibx-linux
 LIBFT_DIR    = libft
 PRINTF_DIR   = $(LIBFT_DIR)/ft_printf
 
-#%.o: %.c ${HEADERS} libft/libft.a MLX42/build/libmlx42.a
-%.o: %.c ${HEADERS} $(LIBFT_DIR)/libft.a $(MINILIBX_DIR)/libmlx.a
-	@${CC} $< -c -o $@
+# Build object files with includes, ensure MLX42 is built before linking
+$(OBJ_DIR)/%.o: %.c ${HEADERS} $(LIBFT_DIR)/libft.a
+	@mkdir -p $(OBJ_DIR)
+	@${CC} $(INCLUDES) $< -c -o $@
 
 # all: libft MLX42 ${NAME}
-all: libft minilibx-linux print_banner check_modifications ${NAME}
+all: libft MLX42 print_banner check_modifications ${NAME}
 
-${NAME}: ${SRCS:.c=.o} ${HEADERS}
-	@${CC} ${SRCS:.c=.o} -o ${NAME} ${FLAGS}
+${NAME}: $(OBJS) ${HEADERS} MLX42
+	@${CC} $(OBJS) -o ${NAME} ${FLAGS}
 	@clear
 	@echo "$(RED_BRIGHT)$$HEADER$(RESET)"
 	@echo "\r\033[K$(CYAN)FDF $(RED_BRIGHT)is ready!$(RESET)"
 
 clean:
-	@rm -rf ${SRCS:.c=.o}
+	@rm -rf $(OBJ_DIR)
 	@make clean -C $(LIBFT_DIR) --no-print-directory
-	@if [ -d "$(MINILIBX_DIR)" ]; then \
-		make clean -C $(MINILIBX_DIR) --no-print-directory > /dev/null 2>&1; \
-	fi
-#	make clean -C MLX42
 
 fclean: clean
 	@make fclean -C $(LIBFT_DIR) --no-print-directory
-	@rm -rf libmlx.a
-#	rm -rf MLX42/build/libmlx42.a
 	@rm -rf ${NAME}
-	@rm -rf $(MINILIBX_DIR)
+	@rm -rf build
 	@clear
 	@echo "$(RED_BRIGHT)$$HEADER$(RESET)"
 
@@ -94,16 +95,11 @@ re: fclean all
 libft:
 	@make -C $(LIBFT_DIR) --no-print-directory
 
-minilibx-linux:
-	@if [ ! -d "$(MINILIBX_DIR)" ]; then \
-		echo "\r\033[K$(CYAN)Cloning $(RED)minilibx-linux...$(RESET)"; \
-		git clone --quiet https://github.com/42Paris/minilibx-linux.git > /dev/null 2>&1; \
-	fi
-	@make -C $(MINILIBX_DIR) > /dev/null 2>&1
-	@sleep 0.5
-
 MLX42:
-	@make -C MLX42/build
+	@if [ ! -f MLX42/build/libmlx42.a ]; then \
+		echo "\r\033[K$(CYAN)Building $(RED)MLX42$(RESET)"; \
+		cmake -S MLX42 -B MLX42/build > /dev/null 2>&1 && cmake --build MLX42/build -j4 > /dev/null 2>&1; \
+	fi
 
 print_banner:
 	@clear
@@ -114,7 +110,6 @@ check_modifications:
 	for src in $(SRCS); do \
 		if [ $$src -nt $(NAME) ]; then \
 			echo "$(CYAN)File $(YELLOW)$$src$(RESET) has been modified!"; \
-			sleep 2; \
 			MODIFIED=1; \
 		fi; \
 	done; \
@@ -122,5 +117,4 @@ check_modifications:
 		echo "make: $(GREEN)'$(NAME)' $(WHITE)is up to $(YELLOW)date.$(RESET)"; \
 	fi
 
- .PHONY: all clean fclean re libft minilibx-linux print_banner check_modifications
-#.PHONY: all clean fclean re libft MLX42
+ .PHONY: all clean fclean re libft MLX42 print_banner check_modifications

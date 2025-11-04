@@ -19,8 +19,8 @@
 # include <math.h>
 # include <stdlib.h>
 # include <unistd.h>
-//# include "MLX42/include/MLX42/MLX42.h"
-# include "minilibx-linux/mlx.h"
+# include <stdint.h>
+# include "MLX42/MLX42.h"
 
 # define WIN_W 1024
 # define WIN_H 768
@@ -29,26 +29,21 @@
 
 typedef struct s_fdf
 {
-	int		zoom;
-	int		color;
-	int		width;
-	int		height;
-	int		shift_x;
-	int		shift_y;
-	float	z_scale;
+	int				zoom;
+	int				color;
+	int				width;
+	int				height;
+	int				shift_x;
+	int				shift_y;
+	float			z_scale;
 
-	int		bpp;
-	int		size_line;
-	int		endian;
-	int		*img_data;
-	void	*img_ptr;
+	// MLX42 handles
+	mlx_t			*mlx;
+	mlx_image_t		*img;
 
-	int		**z_matrix;
-	int		**color_matrix;
-
-	void	*mlx_ptr;
-	void	*win_ptr;
-}			t_fdf;
+	int				**z_matrix;
+	int				**color_matrix;
+}					t_fdf;
 
 typedef struct s_bresenham_params
 {
@@ -58,7 +53,7 @@ typedef struct s_bresenham_params
 	float	y1;
 	float	x_step;
 	float	y_step;
-}			t_bresenham_params;
+}            t_bresenham_params;
 
 int			cleanup(t_fdf *data);
 int			open_file(char *file_name);
