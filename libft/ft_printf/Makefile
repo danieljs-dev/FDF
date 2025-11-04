@@ -70,14 +70,14 @@ $(NAME): $(OBJS)
 #	@clear
 #	@echo "$(RED)$$HEADER$(RESET)"
 	@printf "\r$(CYAN)Compiling $(GREEN)$< $(RESET)"
-	@sleep 0.04
+# 	@sleep 0.04
 
 clean:
 	@rm -f $(OBJS)
 
 fclean: clean
 	@rm -f $(NAME)
-	@sleep 0.05
+# 	@sleep 0.05
 	@clear
 	@echo "$(MAGENTA)$$HEADER$(RESET)"
 
@@ -92,7 +92,6 @@ check_modifications:
 	for src in $(SRCS); do \
 		if [ $$src -nt $(NAME) ]; then \
 			echo "$(CYAN)File $(YELLOW)$$src$(RESET) has been modified!"; \
-			sleep 2; \
 			MODIFIED=1; \
 		fi; \
 	done; \

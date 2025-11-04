@@ -75,7 +75,7 @@ all: print_banner check_modifications $(NAME)
 $(NAME): $(OBJS)
 	@ar rcs $(NAME) $?
 	@echo "\r\033[K$(CYAN)LIBFT $(GREEN_BRIGHT)is ready!$(RESET)"
-	@sleep 1
+# 	@sleep 1
 	@echo
 	@$(MAKE) ft_printf
 #	@make -C $(PRINTF_DIR) --no-print-directory
@@ -91,13 +91,13 @@ bonus: $(OBJS_BONUS)
 #	@clear
 #	@echo "$(RED)$$HEADER$(RESET)"
 	@printf "\r$(CYAN)Compiling $(GREEN)$< $(RESET)"
-	@sleep 0.05
+# 	@sleep 0.05
 
 clean:
 	@echo "$(RED)Removing all .o $(RESET)"
 	@rm -rf $(OBJS) $(OBJS_BONUS) *.o
 	@make -C $(PRINTF_DIR) clean --no-print-directory
-	@sleep 0.5
+# 	@sleep 0.5
 	@clear
 	@echo "$(GREEN_BRIGHT)$$HEADER$(RESET)"
 
@@ -105,7 +105,7 @@ fclean: clean
 	@echo "$(RED)Removing .a$(RESET)"
 	@rm -rf $(NAME)
 	@make -C $(PRINTF_DIR) fclean --no-print-directory
-	@sleep 0.5
+# 	@sleep 0.5
 	@clear
 	@echo "$(GREEN_BRIGHT)$$HEADER$(RESET)"
 
@@ -114,7 +114,7 @@ re: fclean all
 ft_printf:
 	@make -C $(PRINTF_DIR) --no-print-directory
 	@cp $(PRINTF_LIB) . && ar -x libftprintf.a && ar rcs $(NAME) *.o
-	@sleep 2
+# 	@sleep 2
 	@rm -f libftprintf.a
 
 print_banner:
@@ -126,16 +126,13 @@ check_modifications:
 	for src in $(SRCS); do \
 		if [ $$src -nt $(NAME) ]; then \
 			echo "$(CYAN)File $(YELLOW)$$src$(RESET) has been modified"; \
-			sleep 2; \
 			MODIFIED=1; \
 		fi; \
 	done; \
 	for src in $(shell find $(PRINTF_DIR) -name "*.c"); do \
 		if [ $$src -nt $(PRINTF_LIB) ]; then \
 			echo "$(CYAN)File $(YELLOW)$$src$(RESET) has been modified"; \
-			sleep 1; \
 			$(MAKE) ft_printf; \
-			sleep 1; \
 			MODIFIED=1; \
 		fi; \
 	done; \

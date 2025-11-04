@@ -14,19 +14,36 @@
 
 void	put_pixel_to_image(t_fdf *data, int x, int y, int color)
 {
-	if (x >= 0 && x < WIN_W && y >= 0 && y < WIN_H)
-		data->img_data[y * WIN_W + x] = color;
+	uint8_t *px;
+
+	if (!data->img || !data->img->pixels)
+		return ;
+	if (x < 0 || x >= WIN_W || y < 0 || y >= WIN_H)
+		return ;
+	px = &data->img->pixels[(y * WIN_W + x) * 4];
+	px[0] = (color >> 16) & 0xFF; // R
+	px[1] = (color >> 8) & 0xFF;  // G
+	px[2] = (color) & 0xFF;       // B
+	px[3] = 0xFF;                 // A
+}
+
+static void	clear_image(t_fdf *data)
+{
+	if (data->img && data->img->pixels)
+		ft_bzero(data->img->pixels, WIN_W * WIN_H * 4);
 }
 
 void	create_image(t_fdf *data)
 {
-	data->img_ptr = mlx_new_image(data->mlx_ptr, WIN_W, WIN_H);
-	if (!data->img_ptr)
-		exit(1);
-	data->img_data = (int *)mlx_get_data_addr(data->img_ptr, &data->bpp,
-			&data->size_line, &data->endian);
-	if (!data->img_data)
-		exit(1);
+	if (!data->img)
+	{
+		data->img = mlx_new_image(data->mlx, WIN_W, WIN_H);
+		if (!data->img)
+			exit(1);
+		if (mlx_image_to_window(data->mlx, data->img, 0, 0) < 0)
+			exit(1);
+	}
+	clear_image(data);
 }
 
 int	parse_hex_color(const char *hex)
